@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WaterRendering-main", "main\WaterRendering-main.vcxproj", "{38FF5367-A460-3175-2DCE-7727992E6834}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WaterRendering-shaders", "shaders\WaterRendering-shaders.vcxproj", "{1D5A03F4-0954-2C46-F2C0-C256DE5992B2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "x-glad", "libs\x-glad.vcxproj", "{42B23223-2E54-5DF9-170F-714D0350E449}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "x-glfw", "libs\x-glfw.vcxproj", "{FAB23223-E654-5DF9-CF0F-714DBB50E449}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "x-glm", "libs\x-glm.vcxproj", "{2AEE9410-9602-BDC1-5F84-6021CB57B9F2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "x-imgui", "libs\x-imgui.vcxproj", "{05D4AD89-71B3-2C25-7ACB-B7FBE6299386}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "x-stb", "libs\x-stb.vcxproj", "{33229510-9F36-BDC1-68B8-6021D48BB9F2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38FF5367-A460-3175-2DCE-7727992E6834}.Debug|x64.ActiveCfg = Debug|x64
+		{38FF5367-A460-3175-2DCE-7727992E6834}.Debug|x64.Build.0 = Debug|x64
+		{38FF5367-A460-3175-2DCE-7727992E6834}.Release|x64.ActiveCfg = Release|x64
+		{38FF5367-A460-3175-2DCE-7727992E6834}.Release|x64.Build.0 = Release|x64
+		{1D5A03F4-0954-2C46-F2C0-C256DE5992B2}.Debug|x64.ActiveCfg = Debug|x64
+		{1D5A03F4-0954-2C46-F2C0-C256DE5992B2}.Debug|x64.Build.0 = Debug|x64
+		{1D5A03F4-0954-2C46-F2C0-C256DE5992B2}.Release|x64.ActiveCfg = Release|x64
+		{1D5A03F4-0954-2C46-F2C0-C256DE5992B2}.Release|x64.Build.0 = Release|x64
+		{42B23223-2E54-5DF9-170F-714D0350E449}.Debug|x64.ActiveCfg = Debug|x64
+		{42B23223-2E54-5DF9-170F-714D0350E449}.Debug|x64.Build.0 = Debug|x64
+		{42B23223-2E54-5DF9-170F-714D0350E449}.Release|x64.ActiveCfg = Release|x64
+		{42B23223-2E54-5DF9-170F-714D0350E449}.Release|x64.Build.0 = Release|x64
+		{FAB23223-E654-5DF9-CF0F-714DBB50E449}.Debug|x64.ActiveCfg = Debug|x64
+		{FAB23223-E654-5DF9-CF0F-714DBB50E449}.Debug|x64.Build.0 = Debug|x64
+		{FAB23223-E654-5DF9-CF0F-714DBB50E449}.Release|x64.ActiveCfg = Release|x64
+		{FAB23223-E654-5DF9-CF0F-714DBB50E449}.Release|x64.Build.0 = Release|x64
+		{2AEE9410-9602-BDC1-5F84-6021CB57B9F2}.Debug|x64.ActiveCfg = Debug|x64
+		{2AEE9410-9602-BDC1-5F84-6021CB57B9F2}.Debug|x64.Build.0 = Debug|x64
+		{2AEE9410-9602-BDC1-5F84-6021CB57B9F2}.Release|x64.ActiveCfg = Release|x64
+		{2AEE9410-9602-BDC1-5F84-6021CB57B9F2}.Release|x64.Build.0 = Release|x64
+		{05D4AD89-71B3-2C25-7ACB-B7FBE6299386}.Debug|x64.ActiveCfg = Debug|x64
+		{05D4AD89-71B3-2C25-7ACB-B7FBE6299386}.Debug|x64.Build.0 = Debug|x64
+		{05D4AD89-71B3-2C25-7ACB-B7FBE6299386}.Release|x64.ActiveCfg = Release|x64
+		{05D4AD89-71B3-2C25-7ACB-B7FBE6299386}.Release|x64.Build.0 = Release|x64
+		{33229510-9F36-BDC1-68B8-6021D48BB9F2}.Debug|x64.ActiveCfg = Debug|x64
+		{33229510-9F36-BDC1-68B8-6021D48BB9F2}.Debug|x64.Build.0 = Debug|x64
+		{33229510-9F36-BDC1-68B8-6021D48BB9F2}.Release|x64.ActiveCfg = Release|x64
+		{33229510-9F36-BDC1-68B8-6021D48BB9F2}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

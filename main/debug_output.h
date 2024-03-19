@@ -1,0 +1,1 @@
+void setup_gl_debug_output();

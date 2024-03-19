@@ -1,0 +1,17 @@
+Title:
+    Sky Box - Sunny Day
+
+Author:
+    Chad Wolfe
+
+URL:
+    https://opengameart.org/content/sky-box-sunny-day
+
+License(s):
+    * CC-BY 3.0 ( http://creativecommons.org/licenses/by/3.0/legalcode )
+
+Copyright/Attribution Notice:
+    KIIRA
+
+File(s):
+    * Daylight Box_Pieces.zip
