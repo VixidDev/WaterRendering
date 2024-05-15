@@ -1,6 +1,3 @@
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include "Camera.h"
 
 Camera::Camera() {}
@@ -12,8 +9,6 @@ Camera::Camera(glm::vec3 position, glm::vec3 frontDirection, glm::vec3 upVector,
 	_moveSpeed(moveSpeed), 
 	_mouseSensitivity(mouseSensitivity),
 	_isEnabled(false) {
-
-
 }
 
 bool Camera::isEnabled() {

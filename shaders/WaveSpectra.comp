@@ -1,0 +1,117 @@
+#version 460
+
+#define PI 3.14159265
+
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+// Image textures
+layout(binding = 0, rgba32f) writeonly uniform image2D h0k;
+layout(binding = 1, rgba32f) writeonly uniform image2D waveData;
+layout(binding = 2, rg32f) readonly uniform image2D noise;
+
+// Uniforms
+layout(location = 0) uniform int lengthScale;
+layout(location = 1) uniform int size;
+layout(location = 2) uniform float gravity;
+layout(location = 3) uniform float depth;
+layout(location = 4) uniform float peakOmega;
+layout(location = 5) uniform float alpha;
+layout(location = 6) uniform float windspeed;
+layout(location = 7) uniform float waveDirection;
+layout(location = 8) uniform float cutoffLow;
+layout(location = 9) uniform float cutoffHigh;
+
+// Log Gamma Function
+// From Numerical Recipes The Art of Scientific Computing 3rd Edition - Section 6.1
+// http://numerical.recipes/book.html
+float Gammaln(float z) {
+	float x, y, tmp, ser;
+
+	const float cof[14]={57.1562356658629235,-59.5979603554754912,
+                         14.1360979747417471,-0.491913816097620199,.339946499848118887e-4,
+                         .465236289270485756e-4,-.983744753048795646e-4,.158088703224912494e-3,
+                         -.210264441724104883e-3,.217439618115212643e-3,-.164318106536763890e-3,
+                         .844182239838527433e-4,-.261908384015814087e-4,.368991826595316234e-5};
+
+	y=x=z;
+	tmp = x + 5.24218750000000000;
+    tmp = (x + 0.5) * log(tmp) - tmp;
+    ser = 0.999999999999997092;
+    for (int j=0; j < 14; j++) ser += cof[j] / ++y;
+    return tmp + log(2.5066282746310005 * ser / x);
+}
+
+float DispersionRelation(float magnitude, float gravity, float depth) {
+	return sqrt(gravity * magnitude * tanh(min(magnitude * depth, 20)));
+}
+
+float FrequencyDerivative(float magnitude, float gravity, float depth) {
+	float th = tanh(min(magnitude * depth, 20));
+	float ch = cosh(min(magnitude * depth, 10));
+	return gravity * (depth * magnitude / ch / ch + th) / DispersionRelation(magnitude, gravity, depth) / 2;
+}
+
+float JONSWAP(float omega, float gravity) {
+	float sigma;
+	if (omega <= peakOmega) {
+		sigma = 0.07;
+	} else {
+		sigma = 0.09;
+	}
+
+	float r = exp(-(omega - peakOmega) * (omega - peakOmega) / 2 / sigma / sigma / peakOmega / peakOmega);
+	float oneOverOmega = 1 / omega;
+	float peakOmegaOverOmega = peakOmega / omega;
+	return alpha * pow(gravity, 2) * pow(oneOverOmega, 5) * exp(-1.25 * pow(peakOmegaOverOmega, 4)) * pow(3.3, r);
+}
+
+// Hasselmann shaping parameter
+float ShapingParameter(float omega, float peakOmega, float g) {
+	float exponent = -2.33 - 1.45 * (((windspeed * peakOmega) / g) - 1.17);
+
+	if (omega <= peakOmega) {
+		return 6.97 * pow(omega / peakOmega, 4.06);
+	} else {
+		return 9.77 * pow(omega / peakOmega, exponent);
+	}
+}
+
+float NormalisationFactor(float s) {
+	float firstTerm = pow(2, (2 * s - 1)) / PI;
+	float secondTerm = pow(exp(Gammaln(s + 1)), 2) / exp(Gammaln(2 * s + 1));
+	return firstTerm * secondTerm;
+}
+
+float Cosine2s(float theta, float s) {
+	return pow(abs(cos(0.5 * theta)), 2 * s);
+}
+
+// Hasselmann Directional Spreading
+float DirectionalSpreading(float kAngle, float omega, float g) {
+	float s = ShapingParameter(omega, peakOmega, g); 
+	float theta = -waveDirection / 180 * PI;
+	return NormalisationFactor(s) * Cosine2s(kAngle - theta, s);
+}
+
+void main() {
+	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+
+	float deltaK = 2 * PI / lengthScale;
+	int nx = int(gl_GlobalInvocationID.x) - size / 2;
+	int nz = int(gl_GlobalInvocationID.y) - size / 2;
+	vec2 wavevector = vec2(nx, nz) * deltaK;
+	float magnitude = length(wavevector);
+
+	if (magnitude <= cutoffHigh && magnitude >= cutoffLow) {
+		float kAngle = atan(wavevector.y, wavevector.x);
+		float omega = DispersionRelation(magnitude, gravity, depth);
+		imageStore(waveData, id, vec4(wavevector.x, 1 / magnitude, wavevector.y, omega));
+		float omegaDerivative = FrequencyDerivative(magnitude, gravity, depth);
+		float directionalSpectrum = JONSWAP(omega, gravity) * DirectionalSpreading(kAngle, omega, gravity);
+		vec2 result = vec2(imageLoad(noise, id).x, imageLoad(noise, id).y) * sqrt(2 * directionalSpectrum * abs(omegaDerivative) / magnitude * pow(deltaK, 2)); 
+		imageStore(h0k, id, vec4(result, 0, 0));
+	} else {
+		imageStore(h0k, id, vec4(0, 0, 0, 0));
+		imageStore(waveData, id, vec4(wavevector.x, 1, wavevector.y, 0));
+	}
+}

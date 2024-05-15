@@ -1,9 +1,6 @@
 #include "Shader.h"
 #include "ShaderManager.h"
 #include "error.h"
-#include "checkpoint.h"
-
-#include <format>
 
 Shader::Shader() {}
 
@@ -15,72 +12,56 @@ Shader::Shader(std::string vertexFileName, std::string fragmentFileName) :
 }
 
 void Shader::compile() {
-	OGL_CHECKPOINT_ALWAYS();
-
 	deleteShaders();
 
-	this->shaderProgram = glCreateProgram();
+	shaderProgram = glCreateProgram();
 
-	OGL_CHECKPOINT_ALWAYS();
+	vertexShader = ShaderManager::loadShader(GL_VERTEX_SHADER, vertexFile);
+	glAttachShader(shaderProgram, vertexShader);
 
-	this->vertexShader = ShaderManager::loadShader(GL_VERTEX_SHADER, this->vertexFile);
-	glAttachShader(this->shaderProgram, this->vertexShader);
+	fragmentShader = ShaderManager::loadShader(GL_FRAGMENT_SHADER, fragmentFile);
+	glAttachShader(shaderProgram, fragmentShader);
 
-	OGL_CHECKPOINT_ALWAYS();
-
-	this->fragmentShader = ShaderManager::loadShader(GL_FRAGMENT_SHADER, this->fragmentFile);
-	glAttachShader(this->shaderProgram, this->fragmentShader);
-
-	OGL_CHECKPOINT_ALWAYS();
-
-	glLinkProgram(this->shaderProgram);
-
-	OGL_CHECKPOINT_ALWAYS();
+	glLinkProgram(shaderProgram);
 
 	GLint linkStatus;
 	GLint logLength;
-	glGetProgramiv(this->shaderProgram, GL_LINK_STATUS, &linkStatus);
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &linkStatus);
 
-	OGL_CHECKPOINT_ALWAYS();
-
-	glGetProgramiv(this->shaderProgram, GL_INFO_LOG_LENGTH, &logLength);
-
-	OGL_CHECKPOINT_ALWAYS();
+	glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength);
 
 	if (linkStatus == GL_FALSE) {
-		std::string errorMessage = std::format("Failed to link shaders %s and %s. ", this->vertexFile, this->fragmentFile);
+		std::string errorMessage = std::format("Failed to link shaders %s and %s. ", vertexFile, fragmentFile);
 
 		if (logLength > 0) {
 			std::vector<char> logMessage(logLength + 1);
-			glGetShaderInfoLog(this->shaderProgram, logLength, nullptr, &logMessage[0]);
+			glGetShaderInfoLog(shaderProgram, logLength, nullptr, &logMessage[0]);
 			throw Error("%s %s\n", errorMessage, &logMessage[0]);
 		}
 	}
 
-	OGL_CHECKPOINT_ALWAYS();
-
-	this->created = true;
+	created = true;
 }
 
 void Shader::deleteShaders() {
-	if (this->vertexShader >= 0) {
-		glDeleteShader(this->vertexShader);
-		this->vertexShader = -1;
+	if (vertexShader >= 0) {
+		glDeleteShader(vertexShader);
+		vertexShader = -1;
 	}
 
-	if (this->fragmentShader >= 0) {
-		glDeleteShader(this->fragmentShader);
-		this->fragmentShader = -1;
+	if (fragmentShader >= 0) {
+		glDeleteShader(fragmentShader);
+		fragmentShader = -1;
 	}
 
-	if (this->shaderProgram >= 0) {
-		glDeleteProgram(this->shaderProgram);
-		this->shaderProgram = -1;
+	if (shaderProgram >= 0) {
+		glDeleteProgram(shaderProgram);
+		shaderProgram = -1;
 	}
 }
 
 void Shader::enable() {
-	glUseProgram(this->shaderProgram);
+	glUseProgram(shaderProgram);
 }
 
 void Shader::disable() {

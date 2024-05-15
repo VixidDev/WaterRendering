@@ -7,8 +7,8 @@ public:
 	FastFourierTransform();
 	FastFourierTransform(int size);
 
-	void CalculateTwiddleFactorsAndInputIndices();
-	void IFFT2D(GLuint inputTexture, GLuint bufferTexture, GLuint temp);
+	void TwiddlesAndIndices();
+	void IFFT2D(GLuint inputTexture, GLuint bufferTexture);
 
 	ComputeShader _butterfly;
 	ComputeShader _fft;

@@ -1,0 +1,27 @@
+#version 460
+
+#define PI 3.14159265
+
+layout(local_size_x = 1, local_size_y = 8, local_size_z = 1) in;
+
+// Image textures
+layout(binding = 0, rgba32f) writeonly uniform image2D butterfly;
+
+// Uniforms
+uniform int size;
+
+vec2 ComplexExp(vec2 a) {
+	return vec2(cos(a.y), sin(a.y)) * exp(a.x);
+}
+
+void main() {
+	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+	
+	uint shiftedSize = size >> (id.x + 1);
+	vec2 multiplier = 2 * PI * vec2(0, 1) / size;
+	uint indicies = (2 * shiftedSize * (id.y / shiftedSize) + id.y % shiftedSize) % size;
+	vec2 twiddleFactor = ComplexExp(-multiplier * ((id.y / shiftedSize) * shiftedSize));
+
+	imageStore(butterfly, id, vec4(twiddleFactor.x, twiddleFactor.y, indicies, indicies + shiftedSize));
+	imageStore(butterfly, ivec2(id.x, id.y + size / 2), vec4(-twiddleFactor.x, -twiddleFactor.y, indicies, indicies + shiftedSize));
+}

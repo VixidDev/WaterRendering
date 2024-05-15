@@ -1,11 +1,11 @@
 #pragma once
 
+#include <string>
+#include <format>
+
 #include "glad/glad.h"
 #include "ShaderManager.h"
 #include "error.h"
-
-#include <string>
-#include <format>
 
 class ComputeShader {
 public:

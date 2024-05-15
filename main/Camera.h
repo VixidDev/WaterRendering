@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 class Camera {
 public:
@@ -26,10 +27,10 @@ public:
 	float _moveSpeed;
 	float _mouseSensitivity;
 
-	float _lastX;
-	float _lastY;
-	float _yaw;
-	float _pitch;
+	float _lastX = 0.0f;
+	float _lastY = 0.0f;
+	float _yaw = 0.0f;
+	float _pitch = 0.0f;
 
 	bool _isEnabled = false;
 	bool _firstMouse = true;

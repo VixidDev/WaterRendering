@@ -1,0 +1,20 @@
+#version 460
+
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+// Image textures
+layout(binding = 0, rgba32f) readonly uniform image2D h0k;
+layout(binding = 1, rgba32f) writeonly uniform image2D h0;
+
+// Uniforms
+uniform int size;
+
+void main() {
+	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+
+	ivec2 index = ivec2(mod(size - id.x, size), mod(size - id.y, size)); 
+
+	vec2 H0k = imageLoad(h0k, id).xy;
+	vec2 H0minusk = imageLoad(h0k, index).xy;
+	imageStore(h0, id, vec4(H0k.x, H0k.y, H0minusk.x, -H0minusk.y));
+}

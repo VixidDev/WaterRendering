@@ -8,6 +8,8 @@
 
 #include "checkpoint.h"
 
+// Credit to Markus Billeter (COMP3811 module) for OpenGL debug output
+
 namespace
 {
 	// Debug callback
@@ -76,8 +78,8 @@ namespace
 		// interesting information on e.g. NVIDIA (such as in what memory VBOs
 		// are placed, or when shaders are being recompiled). Comment these two
 		// lines if you want to see this:
-		if (GL_DEBUG_TYPE_OTHER == aType)
-			return;
+		//if (GL_DEBUG_TYPE_OTHER == aType)
+			//return;
 
 		std::fprintf(stderr, "OpenGL Debug: %s [%s]: %s\n", severity_str_(aSeverity), type_str_(aType), aMessage);
 

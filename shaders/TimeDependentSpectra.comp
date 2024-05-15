@@ -1,0 +1,49 @@
+#version 460
+
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+layout(binding = 0, rgba32f) writeonly uniform image2D choppiness;
+layout(binding = 1, rgba32f) writeonly uniform image2D elevation;
+layout(binding = 2, rgba32f) writeonly uniform image2D slopeParams;
+layout(binding = 3, rgba32f) writeonly uniform image2D jacobianParams;
+
+layout(binding = 4, rgba32f) readonly uniform image2D h0;
+
+// x: wavevector x  y: 1 / magnitude  z: wavevector z  w: dispersion relation
+layout(binding = 5, rgba32f) readonly uniform image2D waveData;
+
+uniform float time;
+
+vec2 ComplexMult(vec2 a, vec2 b) {
+	return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+}
+
+void main() {
+	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+
+	vec4 waveSpecifics = imageLoad(waveData, id);
+	float phase = waveSpecifics.w * time;
+	vec2 exponent = vec2(cos(phase), sin(phase));
+	vec2 h = ComplexMult(imageLoad(h0, id).xy, exponent) + ComplexMult(imageLoad(h0, id).zw, vec2(exponent.x, -exponent.y));
+	vec2 ih = vec2(-h.y, h.x);
+
+	vec2 surfaceElevation = h;
+
+	// Spectral differentiation
+	// x and z displacements for Tessendorfs 'Choppy' waves
+	vec2 displacementX = ih * waveSpecifics.x * waveSpecifics.y;
+	vec2 displacementZ = ih * waveSpecifics.z * waveSpecifics.y;
+		 
+	vec2 displacementXdx = -h * waveSpecifics.x * waveSpecifics.x * waveSpecifics.y;
+	vec2 displacementYdx = ih * waveSpecifics.x;
+	vec2 displacementZdx = -h * waveSpecifics.x * waveSpecifics.z * waveSpecifics.y;
+		 
+	vec2 displacementYdz = ih * waveSpecifics.z;
+	vec2 displacementZdz = -h * waveSpecifics.z * waveSpecifics.z * waveSpecifics.y;
+	
+	// Pack values in pairs in textures so we reduce the number of IFFT's we need to do
+	imageStore(choppiness, id, vec4(displacementX.x - displacementZ.y, displacementX.y + displacementZ.x, 0, 0));
+	imageStore(elevation, id, vec4(surfaceElevation.x - displacementZdx.y, surfaceElevation.y + displacementZdx.x, 0, 0));
+	imageStore(slopeParams, id, vec4(displacementYdx.x - displacementYdz.y, displacementYdx.y + displacementYdz.x, 0, 0));
+	imageStore(jacobianParams, id, vec4(displacementXdx.x - displacementZdz.y, displacementXdx.y + displacementZdz.x, 0, 0));
+}

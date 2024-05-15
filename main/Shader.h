@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <format>
 
 class Shader {
 public:
@@ -14,11 +15,11 @@ public:
 	void disable();
 
 	bool created = false;
+	int shaderProgram = -1;
 private:
 	std::string vertexFile;
 	std::string fragmentFile;
 
-	int shaderProgram = -1;
 	int vertexShader = -1;
 	int fragmentShader = -1;
 };

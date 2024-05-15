@@ -1,0 +1,62 @@
+#version 460
+
+#define PI 3.14159265
+
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+// Image textures
+layout(binding = 0, rgba32f) readonly uniform image2D twiddleFactors;
+layout(binding = 1, rgba32f) uniform image2D pingpong1; // Pingpong texture for each IFFT step
+layout(binding = 2, rgba32f) uniform image2D pingpong2;
+
+// Uniforms
+uniform int pingpong;
+uniform int iteration;
+uniform int direction;
+
+vec2 ComplexMult(vec2 a, vec2 b) {
+	return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+}
+
+void HorizontalStep() {
+	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+	
+	vec4 data = imageLoad(twiddleFactors, ivec2(iteration, id.x));
+	vec2 indices = data.zw;
+
+	if (pingpong == 1) {
+		vec4 value1 = imageLoad(pingpong1, ivec2(indices.x, id.y));
+		vec4 value2 = imageLoad(pingpong1, ivec2(indices.y, id.y));
+		imageStore(pingpong2, id, value1 + vec4(ComplexMult(vec2(data.x, -data.y), value2.xy), 0, 0));
+	} else {
+		vec4 value1 = imageLoad(pingpong2, ivec2(indices.x, id.y));
+		vec4 value2 = imageLoad(pingpong2, ivec2(indices.y, id.y));
+		vec2 cm = ComplexMult(vec2(data.x, -data.y), value2.xy);
+		imageStore(pingpong1, id, value1 + vec4(ComplexMult(vec2(data.x, -data.y), value2.xy), 0, 0));
+	}
+}
+
+void VerticalStep() {
+	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
+
+	vec4 data = imageLoad(twiddleFactors, ivec2(iteration, id.y));
+	vec2 indices = data.zw;
+
+	if (pingpong == 1) {
+		vec4 value1 = imageLoad(pingpong1, ivec2(id.x, indices.x));
+		vec4 value2 = imageLoad(pingpong1, ivec2(id.x, indices.y));
+		imageStore(pingpong2, id, value1 + vec4(ComplexMult(vec2(data.x, -data.y), value2.xy), 0, 0));
+	} else {
+		vec4 value1 = imageLoad(pingpong2, ivec2(id.x, indices.x));
+		vec4 value2 = imageLoad(pingpong2, ivec2(id.x, indices.y));
+		imageStore(pingpong1, id, value1 + vec4(ComplexMult(vec2(data.x, -data.y), value2.xy), 0, 0));
+	}
+}
+
+void main() {
+	if (direction == 0) {
+		HorizontalStep();
+	} else {
+		VerticalStep();
+	}
+}

@@ -4,13 +4,13 @@ FastFourierTransform::FastFourierTransform() {}
 
 FastFourierTransform::FastFourierTransform(int size) : _size(size) {
 	_butterfly = ComputeShader("../shaders/Butterfly.comp");
-	_fft = ComputeShader("../shaders/FFT.comp");
-	_permute = ComputeShader("../shaders/Permute.comp");
+	_fft =		 ComputeShader("../shaders/FFT.comp");
+	_permute =	 ComputeShader("../shaders/Permute.comp");
 
-	CalculateTwiddleFactorsAndInputIndices();
+	TwiddlesAndIndices();
 }
 
-void FastFourierTransform::CalculateTwiddleFactorsAndInputIndices() {
+void FastFourierTransform::TwiddlesAndIndices() {
 	int logSize = std::log2(_size);
 
 	glGenTextures(1, &_butterflyTexture);
@@ -25,10 +25,10 @@ void FastFourierTransform::CalculateTwiddleFactorsAndInputIndices() {
 
 	glBindImageTexture(0, _butterflyTexture, 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
-	glDispatchCompute(logSize, _size / 8 / 2, 1);
+	glDispatchCompute(logSize, _size / 8, 1);
 }
 
-void FastFourierTransform::IFFT2D(GLuint inputTexture, GLuint bufferTexture, GLuint temp) {
+void FastFourierTransform::IFFT2D(GLuint inputTexture, GLuint bufferTexture) {
 	int logSize = (int)std::log2(_size);
 	int pingPong = 0;
 
@@ -41,7 +41,6 @@ void FastFourierTransform::IFFT2D(GLuint inputTexture, GLuint bufferTexture, GLu
 	glBindImageTexture(0, _butterflyTexture, 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 	glBindImageTexture(1, inputTexture, 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 	glBindImageTexture(2, bufferTexture, 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-	glBindImageTexture(3, temp, 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 
 	for (int i = 0; i < logSize; i++) {
 		pingPong++;
@@ -58,7 +57,6 @@ void FastFourierTransform::IFFT2D(GLuint inputTexture, GLuint bufferTexture, GLu
 	glBindImageTexture(0, _butterflyTexture, 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 	glBindImageTexture(1, inputTexture, 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 	glBindImageTexture(2, bufferTexture, 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-	glBindImageTexture(3, temp, 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 
 	for (int i = 0; i < logSize; i++) {
 		pingPong++;
