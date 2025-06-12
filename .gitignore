@@ -6,3 +6,4 @@ objs/
 *.vcxproj.user
 *.vcxproj.filters
 .ini
+*.sln
