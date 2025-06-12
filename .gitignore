@@ -5,5 +5,5 @@ objs/
 *.vcxproj
 *.vcxproj.user
 *.vcxproj.filters
-.ini
+*.ini
 *.sln
