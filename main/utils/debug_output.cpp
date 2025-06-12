@@ -8,7 +8,7 @@
 
 #include "checkpoint.h"
 
-// Credit to Markus Billeter (COMP3811 module) for OpenGL debug output
+// Credit to Markus Billeter for OpenGL debug output
 
 namespace
 {

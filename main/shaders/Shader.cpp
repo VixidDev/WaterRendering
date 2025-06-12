@@ -1,6 +1,6 @@
 #include "Shader.h"
 #include "ShaderManager.h"
-#include "error.h"
+#include "../utils/error.h"
 
 Shader::Shader() {}
 

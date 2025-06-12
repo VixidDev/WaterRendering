@@ -5,7 +5,7 @@
 
 #include "glad/glad.h"
 #include "ShaderManager.h"
-#include "error.h"
+#include "../utils/error.h"
 
 class ComputeShader {
 public:

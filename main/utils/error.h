@@ -3,7 +3,7 @@
 #include <string>
 #include <exception>
 
-// Credit to Markus Billeter (COMP3811 module) for Error class
+// Credit to Markus Billeter for Error class
 
 // Class used for exceptions. Unlike e.g. std::runtime_error, which only
 // accepts a "fixed" string, Error provides std::printf()-like formatting.

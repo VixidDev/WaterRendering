@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ComputeShader.h"
+#include "../shaders/ComputeShader.h"
 
 class FastFourierTransform {
 public:

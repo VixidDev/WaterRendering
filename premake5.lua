@@ -60,11 +60,13 @@ include "libs"
 project "WaterRendering-main"
 	local sources = {
 		"main/**.cpp",
-		"main/**.hpp",
-		"main/**.h",
-		"main/common/**.cpp",
-		"main/common/**.hpp",
-		"main/common/**.h"
+		"main/**.h*",
+		"main/utils/**.cpp",
+		"main/utils/**.h*",
+		"main/shaders/**.cpp",
+		"main/shaders/**.h*",
+		"main/waves/**.cpp",
+		"main/waves/**.h*"
 	}
 
 	kind "ConsoleApp"

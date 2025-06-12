@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <format>
 #include <numeric>
+#include <iostream>
+#include <chrono>
 
 // 3rd Party Libraries
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,9 +16,9 @@
 // Local classes / files
 #include "Globals.h" // Includes OceanMesh.h, Waves.h, glm.hpp, glad.h
 #include <GLFW/glfw3.h>
-#include "ShaderManager.h"
-#include "Skybox.h" // Inclues stb_image.h, error.h
-#include "debug_output.h"
+#include "shaders/ShaderManager.h"
+#include "utils/Skybox.h" // Inclues stb_image.h, error.h
+#include "utils/debug_output.h"
 
 // Some global variables
 const float PI = 3.14159274f;
@@ -324,9 +326,9 @@ namespace {
 		// Matrices
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = globalState.camera.getViewMatrix();
-		glm::mat4 projection = glm::perspective(glm::radians(100.0f), width / height, 0.1f, 1000.f);
+		glm::mat4 projection = glm::perspective(glm::radians(120.0f), width / height, 0.1f, 1000.f);
 
-		glm::mat4 mvpMatrix = projection * view * model;
+		glm::mat4 mvpMatrix = projection * view;
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

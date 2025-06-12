@@ -2,9 +2,9 @@
 
 #include <map>
 
-#include "Camera.h" // Inlcudes glm.hpp
-#include "OceanMesh.h" // Includes Waves.h
-#include "Waves.h"
+#include "utils/Camera.h" // Inlcudes glm.hpp
+#include "waves/OceanMesh.h" // Includes Waves.h
+#include "waves/Waves.h"
 
 struct GlobalState {
 	Camera camera;
