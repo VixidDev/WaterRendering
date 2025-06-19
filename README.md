@@ -2,6 +2,8 @@
 
 A project to render ocean waves in OpenGL using the Joint North Sea Wave Project (JONSWAP) wave spectra and Hasselmann directional spreading function, and synthesising the wave height field using Fast Fourier Transforms (FFTs) with compute shaders.
 
+https://github.com/user-attachments/assets/c336ee78-29b4-46f9-841b-4f4a5f7387f9
+
 ### Results
 
 The wave spectra and PBR lighting is computed in around 1.7ms (588fps) on the GPU at a 256x256 ocean resolution, with the lighting taking up around 0.8ms of this time. Timing was performed on the following hardware:
